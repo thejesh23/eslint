@@ -8583,6 +8583,40 @@ describe("ESLint", () => {
 			);
 		});
 
+		it("should throw an error if a worker thread exits without reporting results", async () => {
+			const optionsSrc = `
+				export default {
+					concurrency: 2,
+					cwd: ${JSON.stringify(fixtureDir)},
+					plugins: {
+						exit: {
+							rules: {
+								exit: {
+									create() {
+										process.exit(3);
+									},
+								},
+							},
+						},
+					},
+					baseConfig: {
+						rules: {
+							"exit/exit": "error",
+						},
+					},
+				};
+				`;
+			const optionsURL = new URL(
+				`data:text/javascript,${encodeURIComponent(optionsSrc)}`,
+			);
+			eslint = await ESLint.fromOptionsModule(optionsURL);
+
+			await assert.rejects(
+				eslint.lintFiles("*.js"),
+				/A linting worker thread exited unexpectedly with exit code 3/u,
+			);
+		});
+
 		// https://github.com/eslint/eslint/issues/19243
 		it("should not exit the process unexpectedly after a rule crashes", async () => {
 			const cwd = getFixturePath();
