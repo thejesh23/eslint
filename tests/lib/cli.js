@@ -1580,6 +1580,31 @@ describe("cli", () => {
 				assert.isTrue(log.error.calledOnce);
 				assert.strictEqual(exitCode, 2);
 			});
+
+			it(`should error out when the file is ignored`, async () => {
+				const filePath = getFixturePath("xxx.js");
+
+				const exitCode = await cli.execute(
+					`--print-config ${filePath} --ignore-pattern xxx.js`,
+				);
+
+				assert.isTrue(log.info.notCalled);
+				assert.isTrue(log.error.calledOnce);
+				assert.include(log.error.firstCall.args[1], "xxx.js");
+				assert.strictEqual(exitCode, 2);
+			});
+
+			it(`should error out when no configuration object matches the file`, async () => {
+				const filePath = getFixturePath("xxx.md");
+
+				const exitCode = await cli.execute(
+					`--print-config ${filePath}`,
+				);
+
+				assert.isTrue(log.info.notCalled);
+				assert.isTrue(log.error.calledOnce);
+				assert.strictEqual(exitCode, 2);
+			});
 		});
 
 		describe("when passing --report-unused-disable-directives", () => {

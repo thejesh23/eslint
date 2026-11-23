@@ -962,7 +962,7 @@ This option outputs the current ESLint version onto the console. All other optio
 
 #### `--print-config`
 
-This option outputs the configuration to be used for the file passed. When present, no linting is performed and only config-related options are valid. When you use this flag, the CLI does not perform linting.
+This option outputs the configuration to be used for the file passed. When present, no linting is performed and only config-related options are valid. When you use this flag, the CLI does not perform linting. If the file is ignored or no configuration object matches it, ESLint prints an error and exits with code 2.
 
 - **Argument Type**: String. Path to file.
 - **Multiple Arguments**: No
